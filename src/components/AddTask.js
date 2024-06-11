@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-
+import { addTaskToList } from '../slices/taskSlice';
+import { useDispatch } from 'react-redux';
 const AddTask = () => {
-
+    const dispatch =useDispatch();
     const [title,SetTitle]=useState("");
     const [description,setDescription]=useState('');
 
@@ -9,6 +10,9 @@ const AddTask = () => {
         e.preventDefault()
 
         console.log({title , description})
+        dispatch(addTaskToList({title , description}))
+        SetTitle('')
+        setDescription('')
     }
     return (
         <>
