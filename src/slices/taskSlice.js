@@ -7,20 +7,51 @@ const initialState = {
     isLoading : false,
     error :''
 }
+
+const BASE_URL ="http://localhost:8000/tasks" ;
 // GET 
 export const getTaskFromServer = createAsyncThunk(
     "tasks/getTaskFromServer",  
     async (_,{rejectWithValue})=>{
-        const response = await fetch("http://localhost:8000/tasks")
+        const response = await fetch(BASE_URL)
+       try{
         if(response.ok){
             const jsonResponse = await response.json()
             return jsonResponse
         }else{
             return rejectWithValue({error:"not task found"})
         }
+       }catch(error){
+        return rejectWithValue({error:error.message});
+       }
     }
 )
 
+// POST 
+export const postTaskFromServer = createAsyncThunk(
+    "tasks/postTaskFromServer",  
+    async (task,{rejectWithValue})=>{
+        const options= {
+            method :"POST",
+            body : JSON.stringify(task),
+            headers  :{
+                "content-type":"application/json; charset=UTF-8"
+            }
+        }
+       try{
+        const response = await fetch(BASE_URL,options)
+        if(response.ok){
+            const jsonResponse = await response.json()
+            return jsonResponse
+        }else{
+            return rejectWithValue({error:"task post error"})
+        }
+       }
+       catch(error){
+         return rejectWithValue({error:error.message})
+       }
+    }
+)
 
 
 
@@ -61,6 +92,20 @@ const taskSlice = createSlice({
                 state.error =action.payload.error
                 state.isLoading =false
                 state.taskList =[]
+            })
+            // POST
+            .addCase(postTaskFromServer.pending,(state)=>{
+                state.isLoading = true
+            })
+            .addCase(postTaskFromServer.fulfilled,(state,action)=>{
+                state.isLoading =false
+                state.error =''
+                state.taskList.push(action.payload)
+            })
+            .addCase(postTaskFromServer.rejected,(state,action)=>{
+                state.error =action.payload.error
+                state.isLoading =false
+             
             })
 
     }
