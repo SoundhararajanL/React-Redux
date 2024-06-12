@@ -1,10 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
     taskList: [],
-    selectedTask: {}
+    selectedTask: {},
+    isLoading : false,
+    error :''
 }
+// GET 
+export const getTaskFromServer = createAsyncThunk(
+    "tasks/getTaskFromServer",  
+    async (_,{rejectWithValue})=>{
+        const response = await fetch("http://localhost:8000/tasks")
+        if(response.ok){
+            const jsonResponse = await response.json()
+            return jsonResponse
+        }else{
+            return rejectWithValue({error:"not task found"})
+        }
+    }
+)
+
+
+
+
+
+
 
 const taskSlice = createSlice({
     name: "taskSlice",
@@ -24,6 +45,23 @@ const taskSlice = createSlice({
         setSelectedTask :(state,action)=>{
             state.selectedTask =action.payload
         }
+
+    },
+    extraReducers :(builder)=>{
+        builder
+            .addCase(getTaskFromServer.pending,(state)=>{
+                state.isLoading = true
+            })
+            .addCase(getTaskFromServer.fulfilled,(state,action)=>{
+                state.isLoading =false
+                state.error =''
+                state.taskList = action.payload
+            })
+            .addCase(getTaskFromServer.rejected,(state,action)=>{
+                state.error =action.payload.error
+                state.isLoading =false
+                state.taskList =[]
+            })
 
     }
 
