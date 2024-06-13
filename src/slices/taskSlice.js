@@ -54,6 +54,33 @@ export const postTaskFromServer = createAsyncThunk(
 )
 
 
+// PATCH 
+export const updateTaskInServer = createAsyncThunk(
+    "tasks/updateTaskInServer",  
+    async (task,{rejectWithValue})=>{
+        const options= {
+            method :"PATCH",
+            body : JSON.stringify(task),
+            headers  :{
+                "content-type":"application/json; charset=UTF-8"
+            }
+        }
+       try{
+        const response = await fetch(BASE_URL +"/"+task.id,options)
+        if(response.ok){
+            const jsonResponse = await response.json()
+            return jsonResponse
+        }else{
+            return rejectWithValue({error:"task update error"})
+        }
+       }
+       catch(error){
+         return rejectWithValue({error:error.message})
+       }
+    }
+)
+
+
 
 
 
@@ -103,6 +130,21 @@ const taskSlice = createSlice({
                 state.taskList.push(action.payload)
             })
             .addCase(postTaskFromServer.rejected,(state,action)=>{
+                state.error =action.payload.error
+                state.isLoading =false
+             
+            })
+            // PATCH
+            .addCase(updateTaskInServer.pending,(state)=>{
+                state.isLoading = true
+            })
+            .addCase(updateTaskInServer.fulfilled,(state,action)=>{
+                state.isLoading =false
+                state.error =''
+                state.taskList =state.taskList.map((task)=>task.id === action.payload.id ? action.payload : task)
+
+            })
+            .addCase(updateTaskInServer.rejected,(state,action)=>{
                 state.error =action.payload.error
                 state.isLoading =false
              
