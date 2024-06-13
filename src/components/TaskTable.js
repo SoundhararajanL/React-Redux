@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import UpdateTaskModal from './UpdateTask.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useSelector } from 'react-redux'
-import { getTaskFromServer, setSelectedTask } from '../slices/taskSlice.js';
+import { deleteTaskInServer, getTaskFromServer, setSelectedTask } from '../slices/taskSlice.js';
 import { useDispatch } from 'react-redux';
-import { removeTaskFromList } from '../slices/taskSlice.js';
 
 const TaskTable = () => {
     const [modalShow, setModalShow] = useState(false);
@@ -20,7 +19,7 @@ const TaskTable = () => {
 
     const deleteTask = (task) => {
         console.log('Deleted');
-        dispatch(removeTaskFromList(task))
+        dispatch(deleteTaskInServer(task))
     };
 
     useEffect(()=>{

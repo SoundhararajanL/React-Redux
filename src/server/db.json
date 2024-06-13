@@ -1,18 +1,13 @@
 {
   "tasks": [
     {
-      "id": "1",
+      "id": "e418",
       "title": "home screen",
       "description": "completed"
     },
     {
-      "id": "2",
+      "id": "cb64",
       "title": "about screen",
-      "description": "pending"
-    },
-    {
-      "id": "17a6",
-      "title": "new screen",
       "description": "started"
     }
   ]

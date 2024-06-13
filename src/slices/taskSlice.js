@@ -81,6 +81,32 @@ export const updateTaskInServer = createAsyncThunk(
 )
 
 
+// DELETE 
+export const deleteTaskInServer = createAsyncThunk(
+    "tasks/deleteTaskInServer",  
+    async (task,{rejectWithValue})=>{
+        const options= {
+            method :"DELETE",
+            body : JSON.stringify(task),
+            headers  :{
+                "content-type":"application/json; charset=UTF-8"
+            }
+        }
+       try{
+        const response = await fetch(BASE_URL +"/"+task.id,options)
+        if(response.ok){
+            const jsonResponse = await response.json()
+            return jsonResponse
+        }else{
+            return rejectWithValue({error:"task update error"})
+        }
+       }
+       catch(error){
+         return rejectWithValue({error:error.message})
+       }
+    }
+)
+
 
 
 
@@ -145,6 +171,21 @@ const taskSlice = createSlice({
 
             })
             .addCase(updateTaskInServer.rejected,(state,action)=>{
+                state.error =action.payload.error
+                state.isLoading =false
+             
+            })
+             // DELETE
+             .addCase(deleteTaskInServer.pending,(state)=>{
+                state.isLoading = true
+            })
+            .addCase(deleteTaskInServer.fulfilled,(state,action)=>{
+                state.isLoading =false
+                state.error =''
+                state.taskList = state.taskList.filter((task) => task.id !== action.payload.id)
+
+            })
+            .addCase(deleteTaskInServer.rejected,(state,action)=>{
                 state.error =action.payload.error
                 state.isLoading =false
              
