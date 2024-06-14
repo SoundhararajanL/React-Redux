@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-
 const initialState = {
-    taskList: [],
+    taskList: [], 
     selectedTask: {},
     isLoading : false,
     error :''
 }
 
 const BASE_URL ="http://localhost:8000/tasks" ;
+
 // GET 
 export const getTaskFromServer = createAsyncThunk(
     "tasks/getTaskFromServer",  
@@ -19,7 +19,7 @@ export const getTaskFromServer = createAsyncThunk(
             const jsonResponse = await response.json()
             return jsonResponse
         }else{
-            return rejectWithValue({error:"not task found"})
+            return rejectWithValue({error:"task not found"})
         }
        }catch(error){
         return rejectWithValue({error:error.message});
@@ -98,7 +98,7 @@ export const deleteTaskInServer = createAsyncThunk(
             const jsonResponse = await response.json()
             return jsonResponse
         }else{
-            return rejectWithValue({error:"task update error"})
+            return rejectWithValue({error:"task delete error"})
         }
        }
        catch(error){

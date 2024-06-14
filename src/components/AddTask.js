@@ -9,10 +9,14 @@ const AddTask = () => {
     const addTask= (e)=>{
         e.preventDefault()
 
-        console.log({title , description})
+       if(title !=='' || description !== ''){
+        
         dispatch(postTaskFromServer({title , description}))
         SetTitle('')
         setDescription('')
+       }else{
+        alert('please Enter fields ')
+       }
     }
     return (
         <>
